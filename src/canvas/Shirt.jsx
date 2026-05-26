@@ -27,22 +27,20 @@ const Shirt = () => {
         material-roughness={1}
         dispose={null}
       >
-        {/* T-shirt full texture */}
         {snap.isFullTexture && (
           <Decal
             position={[0, 0, 0]}
             rotation={[0, 0, 0]}
-            scale={1}
+            scale={snap.fullScale}
             map={fullTexture}
           />
         )}
 
-        {/* T-shirt logo */}
         {snap.isLogoTexture && (
           <Decal
             position={[0, 0.04, 0.15]}
             rotation={[0, 0, 0]}
-            scale={0.15}
+            scale={snap.logoScale}
             map={logoTexture}
             anisotropy={16}
             depthTest={false}
