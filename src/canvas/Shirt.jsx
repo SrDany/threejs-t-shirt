@@ -7,23 +7,30 @@ import state from "../store";
 
 const Shirt = () => {
   const snap = useSnapshot(state);
-  const { nodes, materials } = useGLTF("/shirt_baked.glb");
+  const { nodes, materials } = useGLTF(`/${snap.currentModel}`);
 
   const logoTexture = useTexture(snap.logoDecal);
   const fullTexture = useTexture(snap.fullDecal);
 
-  useFrame((state, delta) =>
-    easing.dampC(materials.lambert1.color, snap.color, 0.25, delta)
-  );
+  const material = Object.values(materials)[0];
+  const mesh = Object.values(nodes).find((n) => n.isMesh);
+
+  useFrame((state, delta) => {
+    if (material) easing.dampC(material.color, snap.color, 0.25, delta);
+  });
 
   const stateString = JSON.stringify(snap);
+
+  if (!mesh) return null;
+
+  const isSaco = snap.currentModel === 'shirt_saco.glb';
 
   return (
     <group key={stateString}>
       <mesh
         castShadow
-        geometry={nodes.T_Shirt_male.geometry}
-        material={materials.lambert1}
+        geometry={mesh.geometry}
+        material={material}
         material-roughness={1}
         dispose={null}
       >
@@ -31,25 +38,30 @@ const Shirt = () => {
           <Decal
             position={[0, 0, 0]}
             rotation={[0, 0, 0]}
-            scale={snap.fullScale}
+            scale={[snap.fullScaleX, snap.fullScaleY, 1]}
             map={fullTexture}
+            depthTest={isSaco}
+            depthWrite={!isSaco}
           />
         )}
-
         {snap.isLogoTexture && (
           <Decal
             position={[0, 0.04, 0.15]}
             rotation={[0, 0, 0]}
-            scale={snap.logoScale}
+            scale={[snap.logoScaleX, snap.logoScaleY, 1]}
             map={logoTexture}
             anisotropy={16}
-            depthTest={false}
-            depthWrite={true}
+            depthTest={isSaco}
+            depthWrite={!isSaco}
           />
         )}
       </mesh>
     </group>
   );
 };
+
+useGLTF.preload('/shirt_baked.glb');
+useGLTF.preload('/shirt_polo.glb');
+useGLTF.preload('/shirt_saco.glb');
 
 export default Shirt;

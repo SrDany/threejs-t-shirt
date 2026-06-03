@@ -8,6 +8,23 @@ import state from "../store";
 const FilePicker = ({ file, setFile, readFile }) => {
   const snap = useSnapshot(state);
 
+  const SliderRow = ({ label, value, min, max, step, onChange }) => (
+    <div className="mt-2">
+      <p className="text-gray-600 text-xs mb-1">
+        {label}: {Math.round(value / 0.15 * 100)}%
+      </p>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        style={{ width: "100%", accentColor: snap.color }}
+      />
+    </div>
+  );
+
   return (
     <div className="filepicker-container" style={{ height: "auto", minHeight: "220px" }}>
       <div className="flex-1 flex flex-col">
@@ -41,38 +58,38 @@ const FilePicker = ({ file, setFile, readFile }) => {
         />
       </div>
 
-      {/* Slider tamaño Logo */}
       {snap.isLogoTexture && (
         <div className="mt-3">
-          <p className="text-gray-600 text-xs mb-1">
-            Logo size: {Math.round(snap.logoScale * 100 / 0.15)}%
-          </p>
-          <input
-            type="range"
-            min="0.05"
-            max="0.45"
-            step="0.01"
-            value={snap.logoScale}
-            onChange={(e) => (state.logoScale = parseFloat(e.target.value))}
-            style={{ width: "100%", accentColor: snap.color }}
+          <p className="text-gray-500 text-xs font-bold mb-1">📐 Tamaño Logo</p>
+          <SliderRow
+            label="↔ Ancho"
+            value={snap.logoScaleX}
+            min="0.05" max="0.45" step="0.01"
+            onChange={(v) => (state.logoScaleX = v)}
+          />
+          <SliderRow
+            label="↕ Alto"
+            value={snap.logoScaleY}
+            min="0.05" max="0.45" step="0.01"
+            onChange={(v) => (state.logoScaleY = v)}
           />
         </div>
       )}
 
-      {/* Slider tamaño Full texture */}
       {snap.isFullTexture && (
         <div className="mt-3">
-          <p className="text-gray-600 text-xs mb-1">
-            Texture size: {Math.round(snap.fullScale * 100)}%
-          </p>
-          <input
-            type="range"
-            min="0.3"
-            max="2"
-            step="0.05"
-            value={snap.fullScale}
-            onChange={(e) => (state.fullScale = parseFloat(e.target.value))}
-            style={{ width: "100%", accentColor: snap.color }}
+          <p className="text-gray-500 text-xs font-bold mb-1">📐 Tamaño Textura</p>
+          <SliderRow
+            label="↔ Ancho"
+            value={snap.fullScaleX}
+            min="0.3" max="2" step="0.05"
+            onChange={(v) => (state.fullScaleX = v)}
+          />
+          <SliderRow
+            label="↕ Alto"
+            value={snap.fullScaleY}
+            min="0.3" max="2" step="0.05"
+            onChange={(v) => (state.fullScaleY = v)}
           />
         </div>
       )}

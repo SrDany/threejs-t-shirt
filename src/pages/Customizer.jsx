@@ -14,6 +14,13 @@ import {
   Tab,
 } from "../components";
 
+// Modelos disponibles
+const MODELS = [
+  { id: 'shirt_baked.glb', label: 'Camiseta' },
+  { id: 'shirt_polo.glb',  label: 'Polo'     },
+  { id: 'shirt_saco.glb',  label: 'Hoodie'   },
+];
+
 const Customizer = () => {
   const snap = useSnapshot(state);
   const [file, setFile] = useState("");
@@ -25,21 +32,16 @@ const Customizer = () => {
 
   const editorTabRef = useRef(null);
 
-  // Closes the tab if clicked out
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (editorTabRef.current && !editorTabRef.current.contains(event.target)) {
         setActiveEditorTab("");
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // show tab content depending on the activeTab, or close it if clicked again
   const generateTabContent = () => {
     switch (activeEditorTab) {
       case "colorpicker":
@@ -51,15 +53,13 @@ const Customizer = () => {
     }
   };
 
-  // Handles click on tab: opens tab or closes it if clicked again
   const handleTabClick = (tabName) => {
-    setActiveEditorTab((prevTab) => (prevTab === tabName ? "" : tabName)); // Toggle tab
+    setActiveEditorTab((prevTab) => (prevTab === tabName ? "" : tabName));
   };
 
   const handleDecals = (type, result) => {
     const decalType = DecalTypes[type];
     state[decalType.stateProperty] = result;
-
     if (!activeFilterTab[decalType.filterTab]) {
       handleActiveFilterTab(decalType.filterTab);
     }
@@ -78,7 +78,6 @@ const Customizer = () => {
         state.isFullTexture = false;
         break;
     }
-
     setActiveFilterTab((prevState) => ({
       ...prevState,
       [tabName]: !prevState[tabName],
@@ -111,23 +110,46 @@ const Customizer = () => {
                     handleClick={() => handleTabClick(tab.name)}
                   />
                 ))}
-
                 {generateTabContent()}
               </div>
             </div>
           </motion.div>
 
           {/* Go back button */}
-          <motion.div
-            className="absolute z-10 top-5 right-5"
-            {...fadeAnimation}
-          >
+          <motion.div className="absolute z-10 top-5 right-5" {...fadeAnimation}>
             <CustomButton
               type="filled"
               title="Go Back"
               handleClick={() => (state.intro = true)}
               customStyles="w-fit px-4 py-2.5 font-bold text-sm"
             />
+          </motion.div>
+
+          {/* Selector de modelos - arriba centrado */}
+          <motion.div
+            className="absolute z-10 top-5 left-1/2 -translate-x-1/2 flex gap-2"
+            {...fadeAnimation}
+          >
+            {MODELS.map((model) => (
+              <button
+                key={model.id}
+                onClick={() => (state.currentModel = model.id)}
+                style={{
+                  padding: '6px 16px',
+                  borderRadius: '20px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '13px',
+                  background: snap.currentModel === model.id ? snap.color : '#ffffff22',
+                  color: snap.currentModel === model.id ? '#fff' : '#ffffffcc',
+                  backdropFilter: 'blur(10px)',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {model.label}
+              </button>
+            ))}
           </motion.div>
 
           {/* filter tabs */}
@@ -141,7 +163,6 @@ const Customizer = () => {
                 handleClick={() => handleActiveFilterTab(tab.name)}
               />
             ))}
-
             <button className="download-btn" onClick={downloadCanvasToImage}>
               <img
                 src={download}

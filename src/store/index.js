@@ -7,8 +7,12 @@ const state = proxy({
   isFullTexture: false,
   logoDecal: './threejs.png',
   fullDecal: './circuit.png',
-  logoScale: 0.15,
-  fullScale: 1,
+  logoScaleX: 0.15,
+  logoScaleY: 0.15,
+  fullScaleX: 1,
+  fullScaleY: 1,
+  cameraZ: 2,
+  currentModel: 'shirt_baked.glb', // nuevo: modelo activo
 });
 
 export default state;
