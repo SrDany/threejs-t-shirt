@@ -116,13 +116,22 @@ const Customizer = () => {
           </motion.div>
 
           {/* Go back button */}
-          <motion.div className="absolute z-10 top-5 right-5" {...fadeAnimation}>
-            <CustomButton
-              type="filled"
-              title="Go Back"
-              handleClick={() => (state.intro = true)}
-              customStyles="w-fit px-4 py-2.5 font-bold text-sm"
-            />
+        <motion.div className="absolute z-10 top-5 right-5" {...fadeAnimation}>
+         <button
+          style={{
+          padding: '10px 16px',
+          backgroundColor: '#444444',
+          color: '#FFFFFF',
+          border: 'none',
+          borderRadius: '8px',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          cursor: 'pointer',
+          }}
+           onClick={() => (state.intro = true)}
+           >
+          Go Back
+          </button>
           </motion.div>
 
           {/* Selector de modelos - arriba centrado */}
@@ -141,8 +150,8 @@ const Customizer = () => {
                   cursor: 'pointer',
                   fontWeight: 'bold',
                   fontSize: '13px',
-                  background: snap.currentModel === model.id ? snap.color : '#ffffff22',
-                  color: snap.currentModel === model.id ? '#fff' : '#ffffffcc',
+                  background: snap.currentModel === model.id ? '#444444' : '#2a2a2a',
+                  color: '#FFFFFF',
                   backdropFilter: 'blur(10px)',
                   transition: 'all 0.2s',
                 }}
